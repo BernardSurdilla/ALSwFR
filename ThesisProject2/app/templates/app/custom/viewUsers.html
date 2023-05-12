@@ -1,0 +1,30 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<table class="db_displayer">
+    <tr>
+        <td>Username</td>
+        <td>Email</td>
+        <td>Permissions</td>
+        <td>Active</td>
+        <td>Staff</td>
+        <td>Superuser</td>
+        <td>Last Login</td>
+        <td>Date Joined</td>
+    </tr>
+    {% for item in table_data %}
+    <tr>
+        <td>{{ item.username }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.user_permissions }}</td>
+        <td>{{ item.is_active }}</td>
+        <td>{{ item.is_staff }}</td>
+        <td>{{ item.is_superuser }}</td>
+        <td>{{ item.last_login }}</td>
+        <td>{{ item.date_joined }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div id='LiveCamDiv'>
+    <h1 class="jumbotron">LiveCam</h1>
+    <video src="" id="testPlayer" autoplay="true" width="500px" height="500px"></video>
+    <script>
+                var vidElement = document.getElementById("testPlayer");
+
+                function stream (video){
+
+                    if (navigator.mediaDevices.getUserMedia) {
+                        navigator.mediaDevices.getUserMedia({ video: true})
+                        .then(function (stream) {
+                            video.srcObject = stream;
+                        })
+                        .catch(function (err0r) {
+                            console.log("Something went wrong!");
+                        });
+                    }
+                }
+                stream(vidElement);
+    </script>
+</div>
+
+{% endblock %}

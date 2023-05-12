@@ -1,0 +1,50 @@
+:root {
+    --padding_top_def: 10px;
+    --imgWidth: 125;
+    --imgHeight: 125;
+}
+body {
+    background-color: rgb(213 213 213);
+}
+.dashboardWindow {
+    text-align:center;
+    display:grid;
+}
+.navbar{
+    background-color:rgb(2, 52, 107);
+}
+
+.db_displayer {
+    margin-top: var(--padding_top_def);
+    width: 100%;
+}
+.db_displayer td{
+    border:3px inset black;
+}
+.db_displayer tr:nth-child(even){
+    background-color: rgb(96 184 239);
+}
+.db_displayer tr:nth-child(1){
+    text-align:center;
+    background-color: rgb(213 219 0);
+}
+#registration_form {
+    margin-top: var(--padding_top_def);
+}
+#regFormSubmitBtn{
+    margin-top: var(--padding_top_def);
+}
+
+#infoDiv {
+    width: 49%;
+    float:left;
+}
+#faceContainer {
+    float:right;
+    width:49%;
+    display:block;
+}
+#faceContainer img{
+    width: var(--imgWidth);
+    height: var(--imgHeight);
+}

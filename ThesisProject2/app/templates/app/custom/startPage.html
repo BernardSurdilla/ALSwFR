@@ -1,0 +1,28 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+    {% if perms.app.check_user_records == True %}
+        <div id='regEmployees' class="dashboardWindow">
+            <h2>Employees</h2>
+        </div>
+    {% endif %}
+
+    {% if perms.app.check_attendance_records == True %}
+
+        <div id='attToday' class="dashboardWindow">
+            <h2>Expected Attendance Today</h2>
+        </div>
+
+        <div id='attGraph' class="dashboardWindow">
+            <h2>Attendance Graph</h2>
+        </div>
+
+        <div id='lastPplDetected' class="dashboardWindow">
+            <h2>Last People Detected</h2>
+        </div>
+     {% endif %}
+
+    
+
+{% endblock %}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+
+        #camOutputImg {
+            width: 70%;
+            height: 70%;
+        }
+
+    </style>
+</head>
+<body>
+    <center>
+        <img id="camOutputImg" />
+    </center>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function imgUpdater() {
+            // create an AJAX call
+            $.ajax({
+                data: $(this).serialize(), // get the form data
+                url: "{% url 'imgOutput' %}",
+                // on success
+                success: function (response) {
+                    document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+            return false;
+        };
+
+        var interval = 100
+        setInterval(imgUpdater, interval)
+        
+    </script>
+
+
+</body>
+</html>

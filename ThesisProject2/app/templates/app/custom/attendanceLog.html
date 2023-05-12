@@ -1,0 +1,22 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<table class="db_displayer">
+    <tr>
+        <td>Employee Number</td>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Time-in</td>
+        <td>Time-out</td>
+    </tr>
+    {% for item in table_data %}
+    <tr>
+        <td>{{ item.employee_id_num.employee_id_num }}</td>
+        <td>{{ item.employee_id_num.first_name }}</td>
+        <td>{{ item.employee_id_num.last_name }}</td>
+        <td>{{ item.time_in }}</td>
+        <td>{{ item.time_out }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

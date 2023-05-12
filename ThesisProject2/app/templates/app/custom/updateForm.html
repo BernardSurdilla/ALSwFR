@@ -1,0 +1,49 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<form id="registration_form" action="" method="POST" onsubmit="this.submit(); this.reset(); return false;">
+    <div id="infoDiv">
+        {% csrf_token %}
+        {{ form.employee_number }}
+
+        {{ form.first_name }}
+        {{ form.middle_name }}
+        {{ form.last_name }}
+        {{ form.contact_number }}
+        {{ form.email_address }}
+        {{ form.faces }}
+    </div>
+    <div id="faceContainer">
+
+    </div>
+
+
+    <input id="regFormSubmitBtn" type="button" value="Submit">
+</form>
+<script>
+    function dataUpdater() {
+        // create an AJAX call
+        $.ajax({
+            type: "POST",
+            data: $('#employee_number').val(), // get the form data
+            url: "{% url 'getEmpData' %}",
+            // on success
+            success: function (response) {
+
+            },
+            // on error
+            error: function (response) {
+                // alert the error if any error occured
+                console.log(response.responseJSON.errors)
+            }
+        });
+        document.getElementById("first_name").textContent = "ababa"
+        return false;
+    };
+    document.getElementById("regFormSubmitBtn").addEventListener('click', function () { dataUpdater() });
+    document.getElementById("employee_number").addEventListener('onchange', function () { dataUpdater() });
+</script>
+
+
+{% endblock %}
