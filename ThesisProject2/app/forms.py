@@ -41,7 +41,7 @@ class FaceRegistrationForm(forms.Form):
                                    'placeholder': 'Email address'}))
 
 class UpdateFaceRegistrationForm(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.values_list("employee_id_num"))
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, widget=forms.TextInput({
                                    'class': 'form-control',

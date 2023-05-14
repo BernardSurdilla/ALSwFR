@@ -23,7 +23,7 @@ class VideoCameraFaceRecog(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0)
         (self.grabbed, self.frame) = self.video.read()
-        #threading.Thread(target=self.update, args=()).start()
+        threading.Thread(target=self.update, args=()).start()
     def __del__(self):
         self.video.release()
     def update(self):
@@ -86,13 +86,14 @@ class VideoCameraFaceRecog(object):
 
             
 cam = 0
-try:
-    cam = VideoCameraFaceRecog()
-except:
-    pass
 
 #@gzip.gzip_page
 def face_recog(request):
+    try:
+        global cam
+        cam = VideoCameraFaceRecog()
+    except:
+        pass
     return render(request, 'app/custom/cameraOnly.html')
 
 def jsonVidImgResp(request):
@@ -107,4 +108,4 @@ def jsonVidImgRespWOrigImg(request):
     response = {'frameWRect' :base64.b64encode(frameWRect).decode('utf-8'),
                 'frameWORect' :base64.b64encode(frameWORect).decode('utf-8'),
                 }
-    return JsonResponse(response)    
+    return JsonResponse(response)

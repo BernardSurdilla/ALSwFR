@@ -5,7 +5,7 @@
 <form id="registration_form" action="" method="POST" onsubmit="this.submit(); this.reset(); return false;">
     <div id="infoDiv">
         {% csrf_token %}
-        {{ form.employee_number }}
+        {{ form.employee_id_num }}
 
         {{ form.first_name }}
         {{ form.middle_name }}
@@ -19,18 +19,24 @@
     </div>
 
 
-    <input id="regFormSubmitBtn" type="button" value="Submit">
+    <input id="regFormSubmitBtn" type="submit" value="Submit">
 </form>
+<input id="regFormSubmitBtn2" type="button" value="Update">
 <script>
     function dataUpdater() {
+        var x = document.getElementById("id_employee_id_num").value;
         // create an AJAX call
         $.ajax({
-            type: "POST",
-            data: $('#employee_number').val(), // get the form data
+            type: "GET",
+            data: $('#registration_form').serialize(), // get the form data
             url: "{% url 'getEmpData' %}",
             // on success
             success: function (response) {
-
+                document.getElementById("id_first_name").value = response.first_name;
+                document.getElementById("id_middle_name").value = response.middle_name;
+                document.getElementById("id_last_name").value = response.last_name;
+                document.getElementById("id_contact_number").value = response.contact_number;
+                document.getElementById("id_email_address").value = response.email;
             },
             // on error
             error: function (response) {
@@ -38,11 +44,11 @@
                 console.log(response.responseJSON.errors)
             }
         });
-        document.getElementById("first_name").textContent = "ababa"
         return false;
     };
-    document.getElementById("regFormSubmitBtn").addEventListener('click', function () { dataUpdater() });
-    document.getElementById("employee_number").addEventListener('onchange', function () { dataUpdater() });
+
+    document.getElementById("regFormSubmitBtn2").addEventListener('click', function () { dataUpdater() });
+    document.getElementById("id_employee_id_num").addEventListener('onchange', function () { dataUpdater() });
 </script>
 
 

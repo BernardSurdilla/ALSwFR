@@ -14,6 +14,10 @@
     </style>
 </head>
 <body>
+
+    <input id="simDetectIn" type="button" value="Simulate Time IN Detection" onclick="TimeIn"/>
+    <input id="simDetectOut" type="button" value="Simulate Time OUT Detection" onclick="TimeOut"/>
+    <br />
     <center>
         <img id="camOutputImg" />
     </center>
@@ -38,10 +42,16 @@
 
             return false;
         };
+        function TimeIn() {
+
+        }
+        function TimeOut() {
+
+        }
 
         var interval = 100
         setInterval(imgUpdater, interval)
-        
+
     </script>
 
 

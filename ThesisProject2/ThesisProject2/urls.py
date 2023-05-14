@@ -10,24 +10,8 @@ from app import forms, views
 from app.facial_recognition import fr_view
 
 urlpatterns = [
+
     path('', views.startPage, name='home'),
-    path('feed/', views.liveCamFeed, name='liveCamFeed'),
-    path('employee_data/', views.employeeData, name='employeeData'),
-
-    path('employee_data/employee_registration/', views.faceRecogForm, name='registerEmployee'),
-    path('employee_data/registered_employees/', views.viewEmployees, name='viewEmployees'),
-    path('employee_data/update_employees/', views.editUser, name='updateEmployees'),
-
-    path('attendance_log/', views.attendanceLog, name='attendanceLog'),
-    path('users/', views.viewUsers, name='users'),
-
-    path('camera_only/', fr_view.face_recog, name='employeeFeedView'),
-    #For sending json objects with the current camera output
-    path('camFrame/', fr_view.jsonVidImgResp, name='imgOutput'),
-    path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
-    path('imgUp/', views.insertImgArr, name='uploadImages'),
-    path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
-
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
     path('login/',
@@ -43,5 +27,25 @@ urlpatterns = [
          name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('admin/', admin.site.urls),
+    path('feed/', views.liveCamFeed, name='liveCamFeed'),
+
+    #Views for viewing data on db
+    path('employee_data/', views.employeeData, name='employeeData'),
+    path('employee_data/employee_registration/', views.faceRecogForm, name='registerEmployee'),
+    path('employee_data/registered_employees/', views.viewEmployees, name='viewEmployees'),
+    path('employee_data/update_employees/', views.editUser, name='updateEmployees'),
+
+    path('attendance_log/', views.attendanceLog, name='attendanceLog'),
+    path('users/', views.viewUsers, name='users'),
+
+    #Camera View
+    path('camera_only/', fr_view.face_recog, name='employeeFeedView'),
+
+    #For sending json objects with the current camera output
+    path('camFrame/', fr_view.jsonVidImgResp, name='imgOutput'),
+    path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
+    path('imgUp/', views.insertImgArr, name='uploadImages'),
+    path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
+
 ]
 
