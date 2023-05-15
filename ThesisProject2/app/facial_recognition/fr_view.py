@@ -32,13 +32,11 @@ class VideoCameraFaceRecog(object):
     def update(self):
         while True:
             (self.grabbed, self.frame) = self.video.read()
-
     def get_frame(self):
         image = self.frame
         _, self.pngImg = cv2.imencode('.png', image)
         return self.pngImg
-
-    def get_frame_with_rect(self, detect_faces = False):
+    def get_frame_with_rect(self):
         image = self.frame
 
         #Tries to detect if a face is in the frame...
@@ -60,7 +58,6 @@ class VideoCameraFaceRecog(object):
         
         #Returns an byte array(?)
         return self.pngImgWRect
-
     def getFaces(self):
         #Returns an array containing all faces in the current frame
         #If no faces are detected, returns an empty array
@@ -83,6 +80,8 @@ class VideoCameraFaceRecog(object):
     semThread = threading.Lock()
     loggingIntervalMinutes = 1
     def findFace(self):
+        if self.semThread.locked == True:
+            pass
         self.semThread.acquire()
         faceArray = self.getFaces()
         #Finds the faces in the faceArray on the db, resource intensive process, must run on separate thread
@@ -120,10 +119,7 @@ class VideoCameraFaceRecog(object):
                         attendanceLog.save()
         except:
             True
-        self.semThread.release()
-            
-
-            
+        self.semThread.release()      
 cam = 0
 def startCamera():
     global cam

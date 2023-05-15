@@ -4,22 +4,30 @@
 
     {% if perms.app.check_user_records == True %}
         <div id='regEmployees' class="dashboardWindow">
-            <h2>Employees</h2>
+            <h3>Employees</h3>
+            <br />
+            <p> {{ num_of_employees }}</p>
         </div>
     {% endif %}
 
     {% if perms.app.check_attendance_records == True %}
 
         <div id='attToday' class="dashboardWindow">
-            <h2>Expected Attendance Today</h2>
+            <h3>Expected Attendance Today</h3>
+            <br />
+            <p> {{ num_of_employees }}</p>
         </div>
 
         <div id='attGraph' class="dashboardWindow">
-            <h2>Attendance Graph</h2>
+            <h3>Attendance Graph</h3>
         </div>
 
         <div id='lastPplDetected' class="dashboardWindow">
-            <h2>Last People Detected</h2>
+            <h3>Last People Detected</h3>
+            <br />
+            <p>{{ last_detect_type }}</p>
+            <p>{{ last_detect_time }}</p>
+            <p>{{ last_detect_name }}</p>
         </div>
      {% endif %}
 

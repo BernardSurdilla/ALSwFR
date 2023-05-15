@@ -42,22 +42,6 @@ def about(request):
             'message':'A.L.S.W.F.R',
         }
     )
-def startPage(request):
-    
-    fr_view.startCamera()
-    """Renders the startPage html."""
-    assert isinstance(request, HttpRequest)
-
-    cameraOnly = request.user.has_perm("be_camera")
-
-    return render(
-        request,
-        'app/custom/startPage.html',
-        {
-            'title':'A.L.S.W.F.R',
-        }
-    )
-
 def liveCamFeed(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -214,6 +198,37 @@ def insertImgArr(request):
                 facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
                 facedb.save()       
     pass
+def startPage(request):
+    fr_view.startCamera()
+    ltAttEntTime = ""
+    ltAttEntName = ""
+    ltAttEntType = ""
+    
+
+    ltTimeInRow = AttendanceLog.objects.all().order_by('-time_in')[0]
+    ltTimeOutRow = AttendanceLog.objects.all().order_by('-time_out')[0]
+
+    if ltTimeInRow.time_in > ltTimeOutRow.time_out:
+        ltAttEntTime = ltTimeInRow.time_in 
+        ltAttEntName = ltTimeInRow.employee_id_num.first_name + " " + ltTimeInRow.employee_id_num.last_name
+        ltAttEntType = "Time-In"
+    else:
+        ltAttEntTime = ltTimeOutRow.time_out
+        ltAttEntName = ltTimeOutRow.employee_id_num.first_name + " " + ltTimeOutRow.employee_id_num.last_name
+        ltAttEntType = "Time-Out"
+
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/custom/startPage.html',
+        {
+            'title':'A.L.S.W.F.R',
+            'num_of_employees': str(Employee.objects.all().count()),
+            'last_detect_type':ltAttEntType,
+            'last_detect_time':ltAttEntTime,
+            'last_detect_name':ltAttEntName,
+        }
+    )
 
 #Json Requests
 def getEmployeeDataUsingEmpNum(request):
