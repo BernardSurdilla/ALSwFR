@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form id="registration_form" action="" method="POST" onsubmit="this.submit(); this.reset(); return false;">
+<form id="registration_form" action="" method="POST" onsubmit="this.reset(); return false;">
     <div id="infoDiv">
         {% csrf_token %}
         {{ form.employee_id_num }}
@@ -13,12 +13,13 @@
         {{ form.email_address }}
         {{ form.faces }}
     </div>
+
     <div id="faceContainer">
 
     </div>
 
 
-    <input id="regFormSubmitBtn" type="submit" value="Submit">
+    <input id="regFormSubmitBtn" type="submit" value="Submit" onclick="regNewUser()">
 </form>
 
 <div id="camContainer">
@@ -56,27 +57,6 @@
 
         return false;
     };
-
-    function passImgArray() {
-        // create an AJAX call
-        $.ajax({
-            data: { 'capturedImages': capturedImgArray }, // get the form data
-            type: 'POST',
-            url: "{% url 'uploadImages' %}",
-            // on success
-            success: function (response) {
-
-            },
-            // on error
-            error: function (response) {
-                // alert the error if any error occured
-                console.log(response.responseJSON.errors)
-            }
-        });
-
-        return false;
-    };
-
     function captureImg() {
         const imgElem = document.createElement("img");
         imgElem.src = imageWORect;
@@ -86,14 +66,37 @@
 
         document.getElementById("faceContainer").appendChild(imgElem);
     };
+    function regNewUser() {
+        $.ajax({
+            url: "{% url 'registerEmployee' %}",
+            type: "POST",
+            data: {
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(),
+                'employee_id_num': document.getElementById("id_employee_id_num").value,
+                'first_name': document.getElementById("id_first_name").value,
+                'middle_name': document.getElementById("id_middle_name").value,
+                'last_name': document.getElementById("id_last_name").value,
+                'contact_number': document.getElementById("id_contact_number").value,
+                'email_address': document.getElementById("id_email_address").value,
+                'capturedImages': capturedImgArray,
+            },
+            success: function (response) {
+                //Display django httpresponse
+                document.write(response)
+            },
+            // on error
+            error: function (response) {
+                // alert the error if any error occured
+                console.log(response.responseJSON.errors)
+            }
+        });
+    };
 
 
-    var interval = 100
+    var interval = 150
     setInterval(imgUpdater, interval)
-
-    
-
     document.getElementById("captureImg").addEventListener('click', function () { captureImg() });
+    document.getElementById("regFormSubmitBtn").addEventListener('click', function () { passImgArray() });
 </script>
 
 

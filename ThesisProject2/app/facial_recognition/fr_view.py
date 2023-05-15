@@ -34,6 +34,7 @@ class VideoCameraFaceRecog(object):
         image = self.frame
         _, self.pngImg = cv2.imencode('.png', image)
         return self.pngImg
+
     def get_frame_with_rect(self):
         image = self.frame
 
@@ -57,6 +58,7 @@ class VideoCameraFaceRecog(object):
         
         #Returns an byte array(?)
         return self.pngImgWRect
+
     def getFaces(self):
         #Returns an array containing all faces in the current frame
         #If no faces are detected, returns an empty array
@@ -86,14 +88,16 @@ class VideoCameraFaceRecog(object):
 
             
 cam = 0
-
-#@gzip.gzip_page
-def face_recog(request):
+def startCamera():
+    global cam
     try:
-        global cam
         cam = VideoCameraFaceRecog()
     except:
         pass
+
+#@gzip.gzip_page
+def face_recog(request):
+    startCamera()
     return render(request, 'app/custom/cameraOnly.html')
 
 def jsonVidImgResp(request):

@@ -2,14 +2,21 @@
 Definition of views.
 """
 
-from datetime import datetime
+import base64
+import os
+import string
+import random
+from time import sleep
+
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpRequest, JsonResponse
-
 from django.contrib import messages
+from django.contrib.auth.models import User
+
 from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm
 from .models import Employee, FacesDB, AttendanceLog
-from django.contrib.auth.models import User
+from app.facial_recognition import fr_view
 
 creationYear = 2023
 
@@ -36,6 +43,8 @@ def about(request):
         }
     )
 def startPage(request):
+    
+    fr_view.startCamera()
     """Renders the startPage html."""
     assert isinstance(request, HttpRequest)
 
@@ -135,17 +144,9 @@ def editUser(request):
 
     return render(request, 'app/custom/updateForm.html', {'form': form})
 def faceRecogForm(request):
-    """
-    {{ form.employee_number }}
-    {{ form.first_name }}
-    {{ form.middle_name }}
-    {{ form.last_name }}
-    {{ form.contact_number }}
-    {{ form.email_address }}
-    """
     if request.method == 'POST':
         form = FaceRegistrationForm()
-        if request.POST.get('employee_id_num') and request.POST.get('first_name') and request.POST.get('middle_name') and request.POST.get('last_name') and request.POST.get('contact_number') and request.POST.get('email_address'):
+        if request.POST.getlist('capturedImages[]'):
             employee = Employee()
             employee.employee_id_num = request.POST.get('employee_id_num')
             employee.first_name = request.POST.get('first_name')
@@ -153,8 +154,32 @@ def faceRecogForm(request):
             employee.middle_name = request.POST.get('middle_name')
             employee.contact_number = request.POST.get('contact_number')
             employee.email_address = request.POST.get('email_address')
-            
             employee.save()
+
+            #Insert Images into facedb table
+            facedb = FacesDB
+            imgArr = request.POST.getlist('capturedImages[]')
+            tempPath = settings.TEMP_IMG_FOLDER
+            if imgArr:
+                for img in imgArr:
+            
+                    #Remove the header of the data ex. "data:image/png;base64"
+                    trimmedData = img.partition(',')[2]
+
+                    tempImgFilePath = os.path.join(tempPath, 'ayaya.png')
+                    with open(tempImgFilePath, 'wb') as f:
+                        f.write(base64.b64decode(trimmedData))
+
+                    #Generate a random file name for security
+                    res = ''.join(random.choices(string.ascii_uppercase +
+                                     string.digits, k=6))
+
+                    #Insert images to database
+                    facedb = FacesDB()
+                    facedb.employee_id_num = employee
+                    facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
+                    facedb.save()       
+
             messages.success(request, 'Employee successfully registered!')
             return render(request, 'app/custom/registrationForm.html', {'form': form})
         else:
@@ -163,6 +188,31 @@ def faceRecogForm(request):
         form = FaceRegistrationForm()
     return render(request, 'app/custom/registrationForm.html', {'form': form})
 def insertImgArr(request):
+    if request.method == 'POST':
+        #Get the image array and employee id passed
+        imgArr = request.POST.getlist('capturedImages[]')
+        emp_id = request.POST.get('employee_id_num')
+
+        tempPath = settings.TEMP_IMG_FOLDER
+        if imgArr:
+            for img in imgArr:
+            
+                #Remove the header of the data ex. "data:image/png;base64"
+                trimmedData = img.partition(',')[2]
+
+                tempImgFilePath = os.path.join(tempPath, 'ayaya.png')
+                with open(tempImgFilePath, 'wb') as f:
+                    f.write(base64.b64decode(trimmedData))
+
+                #Generate a random file name for security
+                res = ''.join(random.choices(string.ascii_uppercase +
+                                 string.digits, k=6))
+
+                #Insert images to database
+                facedb = FacesDB()
+                facedb.employee_id_num = Employee.objects.get(employee_id_num=emp_id)
+                facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
+                facedb.save()       
     pass
 
 #Json Requests

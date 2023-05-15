@@ -43,10 +43,34 @@
             return false;
         };
         function TimeIn() {
-
+            $.ajax({
+                data: $(this).serialize(), // get the form data
+                url: "{% url 'imgOutput' %}",
+                // on success
+                success: function (response) {
+                    document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    console.log(response.responseJSON.errors)
+                }
+            });
         }
         function TimeOut() {
-
+            $.ajax({
+                data: $(this).serialize(), // get the form data
+                url: "{% url 'imgOutput' %}",
+                // on success
+                success: function (response) {
+                    document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    console.log(response.responseJSON.errors)
+                }
+            });
         }
 
         var interval = 100

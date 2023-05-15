@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 ThesisProject2/env1/
+ThesisProject2/temp/
+ThesisProject2/media/

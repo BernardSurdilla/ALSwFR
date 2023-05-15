@@ -44,8 +44,9 @@ urlpatterns = [
     #For sending json objects with the current camera output
     path('camFrame/', fr_view.jsonVidImgResp, name='imgOutput'),
     path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
-    path('imgUp/', views.insertImgArr, name='uploadImages'),
     path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
+
+
 
 ]
 

@@ -40,7 +40,8 @@ class Employee(models.Model):
 
 class FacesDB(models.Model):
     employee_id_num = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='faces/%Y/%m/%d')
+    #image = models.ImageField(upload_to='faces/%Y/%m/%d')
+    image = models.ImageField(upload_to='faces/')
 
 class AttendanceLog(models.Model):
     employee_id_num = models.ForeignKey(Employee, on_delete=models.CASCADE)
