@@ -157,7 +157,7 @@ def faceRecogForm(request):
             employee.save()
 
             #Insert Images into facedb table
-            facedb = FacesDB
+            facedb = FacesDB()
             imgArr = request.POST.getlist('capturedImages[]')
             tempPath = settings.TEMP_IMG_FOLDER
             if imgArr:

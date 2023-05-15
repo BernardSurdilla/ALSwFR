@@ -46,4 +46,4 @@ class FacesDB(models.Model):
 class AttendanceLog(models.Model):
     employee_id_num = models.ForeignKey(Employee, on_delete=models.CASCADE)
     time_in = models.DateTimeField(blank=False)
-    time_out = models.DateTimeField(blank=True)
+    time_out = models.DateTimeField(blank=True, null=True)
