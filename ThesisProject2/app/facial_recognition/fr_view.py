@@ -11,6 +11,7 @@ from deepface import DeepFace
 import numpy as np
 import cv2
 import threading
+import multiprocessing
 import os
 import base64
 import json
@@ -23,6 +24,7 @@ import json
 
 #to capture video class
 class VideoCameraFaceRecog(object):
+    updateCamFrameThread = None
     def __init__(self):
         self.video = cv2.VideoCapture(0)
         (self.grabbed, self.frame) = self.video.read()
@@ -32,6 +34,20 @@ class VideoCameraFaceRecog(object):
     def update(self):
         while True:
             (self.grabbed, self.frame) = self.video.read()
+    """
+    def startCamera(self):
+        if type(self.updateCamFrameThread) != multiprocessing.context.Process:
+            self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
+            self.updateCamFrameThread.start()
+        else:
+            if self.updateCamFrameThread.is_alive() == True:
+                self.updateCamFrameThread.terminate()
+                self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
+                self.updateCamFrameThread.start()
+            else:
+                self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
+                self.updateCamFrameThread.start()
+    """
     def get_frame(self):
         image = self.frame
         _, self.pngImg = cv2.imencode('.png', image)
@@ -121,14 +137,21 @@ class VideoCameraFaceRecog(object):
             True
         self.semThread.release()      
 cam = 0
-def startCamera():
+def initializeCamera():
     global cam
-
     try:
         cam = VideoCameraFaceRecog()
     except:
         pass
-
+"""
+def startCamera():
+    camVarType = type(cam)
+    #Checks if the camera is started, if it is, starts updating the camera
+    if camVarType == VideoCameraFaceRecog:
+        cam.startCamera()
+    else:
+        pass
+"""
 #@gzip.gzip_page
 def face_recog(request):
     return render(request, 'app/custom/cameraOnly.html')

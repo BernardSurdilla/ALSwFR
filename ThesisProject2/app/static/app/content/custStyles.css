@@ -11,7 +11,9 @@ body {
     display:grid;
 }
 .dashboardWindow p{
-    font-size:24px;
+    font-size: 17px;
+    color: cornflowerblue;
+    font-style: italic;
 }
 .navbar{
     background-color:rgb(2, 52, 107);

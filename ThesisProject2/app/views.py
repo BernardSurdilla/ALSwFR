@@ -98,7 +98,6 @@ def employeeData(request):
 #Requests for returning data from database with html page, and editing data
 def editUser(request):
     query_results = Employee.objects.values('employee_id_num')[0]
-
     """
     {{ form.employee_number }}
     {{ form.first_name }}
@@ -128,6 +127,7 @@ def editUser(request):
 
     return render(request, 'app/custom/updateForm.html', {'form': form})
 def faceRecogForm(request):
+    #The view for user registration
     if request.method == 'POST':
         form = FaceRegistrationForm()
         if request.POST.getlist('capturedImages[]'):
@@ -199,7 +199,7 @@ def insertImgArr(request):
                 facedb.save()       
     pass
 def startPage(request):
-    fr_view.startCamera()
+    fr_view.initializeCamera()
     ltAttEntTime = ""
     ltAttEntName = ""
     ltAttEntType = ""
