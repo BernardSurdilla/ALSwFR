@@ -22,15 +22,14 @@
 
     <input id="regFormSubmitBtn" type="submit" value="Submit">
 </form>
-<input id="regFormSubmitBtn2" type="button" value="Update">
 <script>
     function dataUpdater() {
         var x = document.getElementById("id_employee_id_num").value;
         // create an AJAX call
         $.ajax({
             type: "GET",
-            data: $('#registration_form').serialize(), // get the form data
-            url: "{% url 'getEmpData' %}",
+            data: {'employee_number': x}, // get the form data
+            url: "{% url 'updateEmployees' %}",
             // on success
             success: function (response) {
                 document.getElementById("id_first_name").value = response.first_name;
@@ -45,11 +44,8 @@
                 console.log(response.responseJSON.errors)
             }
         });
-        return false;
     };
-
-    document.getElementById("regFormSubmitBtn2").addEventListener('click', function () { dataUpdater() });
-    document.getElementById("id_employee_id_num").addEventListener('onchange', function () { dataUpdater() });
+    document.getElementById("id_employee_id_num").addEventListener('change', function () { dataUpdater() });
 </script>
 
 

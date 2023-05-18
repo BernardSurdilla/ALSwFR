@@ -7,6 +7,7 @@ import os
 import string
 import random
 from time import sleep
+from types import NoneType
 
 from django.conf import settings
 from django.shortcuts import render
@@ -106,6 +107,32 @@ def editUser(request):
     {{ form.contact_number }}
     {{ form.email_address }}
     """
+    if request.method == 'GET':
+        employeeIdNum = request.GET.get('employee_number')
+
+        if type(employeeIdNum) != NoneType:
+            try:
+                employeeInstance = Employee.objects.filter(employee_id_num=int(employeeIdNum))[0]
+
+                response = {
+                    'first_name': employeeInstance.first_name,
+                    'middle_name': employeeInstance.middle_name,
+                    'last_name': employeeInstance.last_name,
+                    'contact_number': employeeInstance.contact_number,
+                    'email': employeeInstance.email_address,
+                    }
+                return JsonResponse(response)
+            except:
+                placeholder = 'N/A'
+                response = {
+                    'first_name': placeholder,
+                    'middle_name': placeholder,
+                    'last_name': placeholder,
+                    'contact_number': placeholder,
+                    'email': placeholder,
+                    }
+                return JsonResponse(response)
+
     if request.method == 'POST':
         form = UpdateFaceRegistrationForm()
         if request.POST.get('employee_id_num') and request.POST.get('first_name') and request.POST.get('middle_name') and request.POST.get('last_name') and request.POST.get('contact_number') and request.POST.get('email_address'):

@@ -95,6 +95,8 @@ class VideoCameraFaceRecog(object):
     #Thread for background faceRecognition
     semThread = threading.Lock()
     loggingIntervalMinutes = 1
+
+    #Function to find faces in the frame, and log them to the attendance records, works if the user only has a single camera
     def findFace(self):
         if self.semThread.locked == True:
             pass
@@ -139,10 +141,11 @@ class VideoCameraFaceRecog(object):
 cam = 0
 def initializeCamera():
     global cam
-    try:
-        cam = VideoCameraFaceRecog()
-    except:
-        pass
+    if type(cam) != VideoCameraFaceRecog:
+        try:
+            cam = VideoCameraFaceRecog()
+        except:
+            pass
 """
 def startCamera():
     camVarType = type(cam)
