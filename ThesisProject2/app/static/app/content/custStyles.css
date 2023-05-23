@@ -1,7 +1,7 @@
 :root {
     --padding_top_def: 10px;
-    --imgWidth: 125;
-    --imgHeight: 125;
+    --imgWidth: 100;
+    --imgHeight: 100;
 }
 body {
     background-color: rgb(213 213 213);
@@ -11,7 +11,7 @@ body {
     display:grid;
 }
 .dashboardWindow p{
-    font-size: 17px;
+    font-size: 18px;
     color: cornflowerblue;
     font-style: italic;
 }
@@ -52,4 +52,8 @@ body {
 #faceContainer img{
     width: var(--imgWidth);
     height: var(--imgHeight);
+}
+.camOutputImg {
+    width: 70%;
+    height: 70%;
 }

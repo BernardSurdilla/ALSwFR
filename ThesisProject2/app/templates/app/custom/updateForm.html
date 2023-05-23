@@ -29,7 +29,7 @@
         $.ajax({
             type: "GET",
             data: {'employee_number': x}, // get the form data
-            url: "{% url 'updateEmployees' %}",
+            url: "{% url 'getEmpData' %}",
             // on success
             success: function (response) {
                 document.getElementById("id_first_name").value = response.first_name;

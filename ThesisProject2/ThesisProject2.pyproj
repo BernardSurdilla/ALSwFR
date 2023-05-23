@@ -76,6 +76,7 @@
     <Content Include="app\templates\app\custom\updateForm.html" />
     <Content Include="app\templates\app\custom\registrationForm.html" />
     <Content Include="app\templates\app\custom\startPage.html" />
+    <Content Include="app\templates\app\custom\uploadImages.html" />
     <Content Include="app\templates\app\custom\viewUsers.html" />
     <Content Include="app\templates\app\custom\viewEmployees.html">
       <SubType>Code</SubType>

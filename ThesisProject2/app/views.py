@@ -10,12 +10,12 @@ from time import sleep
 from types import NoneType
 
 from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpRequest, JsonResponse
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm
+from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm
 from .models import Employee, FacesDB, AttendanceLog
 from app.facial_recognition import fr_view
 
@@ -98,41 +98,6 @@ def employeeData(request):
 
 #Requests for returning data from database with html page, and editing data
 def editUser(request):
-    query_results = Employee.objects.values('employee_id_num')[0]
-    """
-    {{ form.employee_number }}
-    {{ form.first_name }}
-    {{ form.middle_name }}
-    {{ form.last_name }}
-    {{ form.contact_number }}
-    {{ form.email_address }}
-    """
-    if request.method == 'GET':
-        employeeIdNum = request.GET.get('employee_number')
-
-        if type(employeeIdNum) != NoneType:
-            try:
-                employeeInstance = Employee.objects.filter(employee_id_num=int(employeeIdNum))[0]
-
-                response = {
-                    'first_name': employeeInstance.first_name,
-                    'middle_name': employeeInstance.middle_name,
-                    'last_name': employeeInstance.last_name,
-                    'contact_number': employeeInstance.contact_number,
-                    'email': employeeInstance.email_address,
-                    }
-                return JsonResponse(response)
-            except:
-                placeholder = 'N/A'
-                response = {
-                    'first_name': placeholder,
-                    'middle_name': placeholder,
-                    'last_name': placeholder,
-                    'contact_number': placeholder,
-                    'email': placeholder,
-                    }
-                return JsonResponse(response)
-
     if request.method == 'POST':
         form = UpdateFaceRegistrationForm()
         if request.POST.get('employee_id_num') and request.POST.get('first_name') and request.POST.get('middle_name') and request.POST.get('last_name') and request.POST.get('contact_number') and request.POST.get('email_address'):
@@ -167,30 +132,6 @@ def faceRecogForm(request):
             employee.email_address = request.POST.get('email_address')
             employee.save()
 
-            #Insert Images into facedb table
-            facedb = FacesDB()
-            imgArr = request.POST.getlist('capturedImages[]')
-            tempPath = settings.TEMP_IMG_FOLDER
-            if imgArr:
-                for img in imgArr:
-            
-                    #Remove the header of the data ex. "data:image/png;base64"
-                    trimmedData = img.partition(',')[2]
-
-                    tempImgFilePath = os.path.join(tempPath, 'ayaya.png')
-                    with open(tempImgFilePath, 'wb') as f:
-                        f.write(base64.b64decode(trimmedData))
-
-                    #Generate a random file name for security
-                    res = ''.join(random.choices(string.ascii_uppercase +
-                                     string.digits, k=6))
-
-                    #Insert images to database
-                    facedb = FacesDB()
-                    facedb.employee_id_num = employee
-                    facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
-                    facedb.save()       
-
             messages.success(request, 'Employee successfully registered!')
             return render(request, 'app/custom/registrationForm.html', {'form': form})
         else:
@@ -200,12 +141,25 @@ def faceRecogForm(request):
     return render(request, 'app/custom/registrationForm.html', {'form': form})
 def insertImgArr(request):
     if request.method == 'POST':
+        emp_id = 0
+        #Check if employeeId is valid
+        try:
+            emp_id = int(request.POST.get('employee_id_num'))
+        except:
+            pass
+
         #Get the image array and employee id passed
         imgArr = request.POST.getlist('capturedImages[]')
-        emp_id = request.POST.get('employee_id_num')
-
         tempPath = settings.TEMP_IMG_FOLDER
-        if imgArr:
+
+        #Get employee instance
+        curEmployeeQuerySet = Employee.objects.filter(employee_id_num=emp_id)
+
+        #Check if imgArr and curEmployeeQuerySet is not empty
+        if imgArr and curEmployeeQuerySet:
+            curEmployee = curEmployeeQuerySet[0]
+            facedb = FacesDB()
+
             for img in imgArr:
             
                 #Remove the header of the data ex. "data:image/png;base64"
@@ -217,14 +171,26 @@ def insertImgArr(request):
 
                 #Generate a random file name for security
                 res = ''.join(random.choices(string.ascii_uppercase +
-                                 string.digits, k=6))
+                                    string.digits, k=6))
 
                 #Insert images to database
                 facedb = FacesDB()
-                facedb.employee_id_num = Employee.objects.get(employee_id_num=emp_id)
+                facedb.employee_id_num = curEmployee
                 facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
-                facedb.save()       
+                facedb.save()
+                messages.success(request, 'Employee successfully registered!')
+        else:
+            messages.error(request, 'Invalid data input! Try again.')
     pass
+def uploadImages(request):
+    form = RegisterFaceForm()
+    return render(
+        request, 
+        'app/custom/uploadImages.html', 
+        {
+            'form': form,
+        }
+    )
 def startPage(request):
     fr_view.initializeCamera()
     ltAttEntTime = ""
@@ -260,27 +226,27 @@ def startPage(request):
 #Json Requests
 def getEmployeeDataUsingEmpNum(request):
     if request.method == 'GET':
-        cur_employee_id_num = request.GET.get('employee_id_num')
-        if cur_employee_id_num:
-            query_results = Employee.objects.filter(employee_id_num=cur_employee_id_num)[0]
-            response = {
-                'first_name': query_results.first_name,
-                'middle_name': query_results.middle_name,
-                'last_name': query_results.last_name,
-                'contact_number': query_results.contact_number,
-                'email': query_results.email_address,
-                }
-            return JsonResponse(response)
-        else:
-            return JsonResponse({})
-    """
-    if request.method == 'POST':
-        employee = Employee()
-        empNum = employee.employee_number = request.POST.get('employee_number')
-        query_results = Employee.objects.filter(employee_number=empNum)
+        employeeIdNum = request.GET.get('employee_number')
 
-        response = {
-            'succ':'succ'
-            }
-        return JsonResponse(response)
-    """
+        if type(employeeIdNum) != NoneType:
+            try:
+                employeeInstance = Employee.objects.filter(employee_id_num=int(employeeIdNum))[0]
+
+                response = {
+                    'first_name': employeeInstance.first_name,
+                    'middle_name': employeeInstance.middle_name,
+                    'last_name': employeeInstance.last_name,
+                    'contact_number': employeeInstance.contact_number,
+                    'email': employeeInstance.email_address,
+                    }
+                return JsonResponse(response)
+            except:
+                placeholder = 'N/A'
+                response = {
+                    'first_name': placeholder,
+                    'middle_name': placeholder,
+                    'last_name': placeholder,
+                    'contact_number': placeholder,
+                    'email': placeholder,
+                    }
+                return JsonResponse(response)

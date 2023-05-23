@@ -8,13 +8,10 @@ from django.utils.timezone import localtime
 from datetime import timedelta
 from deepface import DeepFace
 
-import numpy as np
 import cv2
 import threading
-import multiprocessing
 import os
 import base64
-import json
 
 
 """
@@ -34,20 +31,6 @@ class VideoCameraFaceRecog(object):
     def update(self):
         while True:
             (self.grabbed, self.frame) = self.video.read()
-    """
-    def startCamera(self):
-        if type(self.updateCamFrameThread) != multiprocessing.context.Process:
-            self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
-            self.updateCamFrameThread.start()
-        else:
-            if self.updateCamFrameThread.is_alive() == True:
-                self.updateCamFrameThread.terminate()
-                self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
-                self.updateCamFrameThread.start()
-            else:
-                self.updateCamFrameThread = multiprocessing.Process(target=self.update, args=())
-                self.updateCamFrameThread.start()
-    """
     def get_frame(self):
         image = self.frame
         _, self.pngImg = cv2.imencode('.png', image)
@@ -158,7 +141,6 @@ def startCamera():
 #@gzip.gzip_page
 def face_recog(request):
     return render(request, 'app/custom/cameraOnly.html')
-
 def jsonVidImgResp(request):
     frame = cam.get_frame_with_rect()
     cam.findFace()

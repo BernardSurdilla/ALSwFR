@@ -3,23 +3,17 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
-    <style>
-
-        #camOutputImg {
-            width: 70%;
-            height: 70%;
-        }
-
-    </style>
+    <title>{{ title }} - Attendance Logging System</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/custStyles.css' %}" />
+    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
 <body>
-
-    <input id="simDetectIn" type="button" value="Simulate Time IN Detection" onclick="TimeIn"/>
-    <input id="simDetectOut" type="button" value="Simulate Time OUT Detection" onclick="TimeOut"/>
     <br />
     <center>
-        <img id="camOutputImg" />
+        <img id="camOutputImg" class="camOutputImg" />
     </center>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -42,38 +36,7 @@
 
             return false;
         };
-        function TimeIn() {
-            $.ajax({
-                data: $(this).serialize(), // get the form data
-                url: "{% url 'imgOutput' %}",
-                // on success
-                success: function (response) {
-                    document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
-                },
-                // on error
-                error: function (response) {
-                    // alert the error if any error occured
-                    console.log(response.responseJSON.errors)
-                }
-            });
-        }
-        function TimeOut() {
-            $.ajax({
-                data: $(this).serialize(), // get the form data
-                url: "{% url 'imgOutput' %}",
-                // on success
-                success: function (response) {
-                    document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
-                },
-                // on error
-                error: function (response) {
-                    // alert the error if any error occured
-                    console.log(response.responseJSON.errors)
-                }
-            });
-        }
-
-        var interval = 100
+        var interval = 150
         setInterval(imgUpdater, interval)
 
     </script>

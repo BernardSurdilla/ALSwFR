@@ -34,6 +34,7 @@ urlpatterns = [
     path('employee_data/employee_registration/', views.faceRecogForm, name='registerEmployee'),
     path('employee_data/registered_employees/', views.viewEmployees, name='viewEmployees'),
     path('employee_data/update_employees/', views.editUser, name='updateEmployees'),
+    path('employee_data/add_face/', views.uploadImages, name='uploadImages'),
 
     path('attendance_log/', views.attendanceLog, name='attendanceLog'),
     path('users/', views.viewUsers, name='users'),
@@ -46,6 +47,8 @@ urlpatterns = [
     path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
     path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
 
+    #For uploading images
+    path('upImg', views.insertImgArr, name='insertImgArr')
 
 
 ]

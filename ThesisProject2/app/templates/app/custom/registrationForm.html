@@ -83,13 +83,16 @@
             success: function (response) {
                 //Display django httpresponse
                 document.write(response)
+                window.location.reload()
             },
             // on error
             error: function (response) {
                 // alert the error if any error occured
                 console.log(response.responseJSON.errors)
+                window.location.reload()
             }
         });
+        
     };
 
 
