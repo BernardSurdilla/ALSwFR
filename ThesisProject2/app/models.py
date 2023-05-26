@@ -37,13 +37,16 @@ class Employee(models.Model):
     middle_name = models.CharField(max_length=20, blank=True)
     contact_number = models.CharField(max_length=20, blank=True)
     email_address = models.EmailField(max_length=254, blank=True)
+    active = models.BooleanField(default=True)
 
 class FacesDB(models.Model):
     employee_id_num = models.ForeignKey(Employee, on_delete=models.CASCADE)
     #image = models.ImageField(upload_to='faces/%Y/%m/%d')
     image = models.ImageField(upload_to='faces/')
+    active = models.BooleanField(default=True)
 
 class AttendanceLog(models.Model):
     employee_id_num = models.ForeignKey(Employee, on_delete=models.CASCADE)
     time_in = models.DateTimeField(blank=False)
     time_out = models.DateTimeField(blank=True, null=True)
+    active = models.BooleanField(default=True)

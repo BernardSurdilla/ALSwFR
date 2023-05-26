@@ -22,4 +22,9 @@
     </tr>
     {% endfor %}
 </table>
+<h4><a href="{% url 'registerEmployee' %}">Register Employee</a></h4>
+<h4><a href="{% url 'updateEmployees' %}">Update Employee Data </a></h4>
+<h4><a href="{% url 'uploadImages' %}">Register Employee Face</a></h4>
+<h4><a href="{% url 'removeEmployee' %}">Remove Employee</a></h4>
+<h4><a href="{% url 'removedEmployees' %}">View Removed Employees</a></h4>
 {% endblock %}

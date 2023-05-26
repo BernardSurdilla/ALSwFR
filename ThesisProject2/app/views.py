@@ -11,11 +11,11 @@ from types import NoneType
 
 from django.conf import settings
 from django.shortcuts import render, redirect
-from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
+from django.http import HttpRequest, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm
+from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm, RemoveEmployee
 from .models import Employee, FacesDB, AttendanceLog
 from app.facial_recognition import fr_view
 
@@ -65,12 +65,22 @@ def viewUsers(request):
         }
     )
 def viewEmployees(request):
-    query_results = Employee.objects.all()
+    query_results = Employee.objects.filter(active = True)
     return render(
         request, 
         'app/custom/viewEmployees.html', 
         {
             'title':'Employees',
+            'table_data': query_results,
+        }
+    )
+def viewRemovedEmployees(request):
+    query_results = Employee.objects.filter(active = False)
+    return render(
+        request, 
+        'app/custom/removedEmployees.html', 
+        {
+            'title':'Removed Employees',
             'table_data': query_results,
         }
     )
@@ -83,16 +93,6 @@ def attendanceLog(request):
         {
             'title':'Attendance Log',
             'table_data': query_results,
-        }
-    )
-def employeeData(request):
-    """Renders the startPage html."""
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'app/custom/employeeData.html',
-        {
-            'title':'Employee Data',
         }
     )
 
@@ -122,22 +122,20 @@ def faceRecogForm(request):
     #The view for user registration
     if request.method == 'POST':
         form = FaceRegistrationForm()
-        if request.POST.getlist('capturedImages[]'):
-            employee = Employee()
-            employee.employee_id_num = request.POST.get('employee_id_num')
-            employee.first_name = request.POST.get('first_name')
-            employee.last_name = request.POST.get('last_name')
-            employee.middle_name = request.POST.get('middle_name')
-            employee.contact_number = request.POST.get('contact_number')
-            employee.email_address = request.POST.get('email_address')
-            employee.save()
+        employee = Employee()
+        employee.employee_id_num = request.POST.get('employee_id_num')
+        employee.first_name = request.POST.get('first_name')
+        employee.last_name = request.POST.get('last_name')
+        employee.middle_name = request.POST.get('middle_name')
+        employee.contact_number = request.POST.get('contact_number')
+        employee.email_address = request.POST.get('email_address')
+        employee.save()
 
-            messages.success(request, 'Employee successfully registered!')
-            return render(request, 'app/custom/registrationForm.html', {'form': form})
-        else:
-            messages.error(request, 'Invalid data input! Try again.')
+        messages.success(request, 'Employee successfully registered!')
+        return render(request, 'app/custom/registrationForm.html', {'form': form})
     else:
         form = FaceRegistrationForm()
+
     return render(request, 'app/custom/registrationForm.html', {'form': form})
 def insertImgArr(request):
     if request.method == 'POST':
@@ -191,6 +189,20 @@ def uploadImages(request):
             'form': form,
         }
     )
+def removeEmployee(request):
+    form = RemoveEmployee()
+    if request.method == 'POST':
+        employee_id_number = request.POST.get('employee_id_num')
+        if Employee.objects.filter(employee_id_num=employee_id_number, active=True):
+            empInst = Employee.objects.filter(employee_id_num=employee_id_number, active=True)[0]
+            empInst.active = False
+            empInst.save()
+            messages.success(request, 'Employee successfully removed!')
+            return render(request,'app/custom/removeEmployee.html',{'form': form,})
+    else:
+        return render(request,'app/custom/removeEmployee.html',{'form': form,})
+
+    return render(request,'app/custom/removeEmployee.html',{'form': form,})
 def startPage(request):
     fr_view.initializeCamera()
     ltAttEntTime = ""
@@ -216,7 +228,7 @@ def startPage(request):
         'app/custom/startPage.html',
         {
             'title':'A.L.S.W.F.R',
-            'num_of_employees': str(Employee.objects.all().count()),
+            'num_of_employees': str(Employee.objects.filter(active=True).count()),
             'last_detect_type':ltAttEntType,
             'last_detect_time':ltAttEntTime,
             'last_detect_name':ltAttEntName,

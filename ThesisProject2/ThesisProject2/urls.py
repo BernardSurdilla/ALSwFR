@@ -30,11 +30,12 @@ urlpatterns = [
     path('feed/', views.liveCamFeed, name='liveCamFeed'),
 
     #Views for viewing data on db
-    path('employee_data/', views.employeeData, name='employeeData'),
+    path('employee_data/', views.viewEmployees, name='viewEmployees'),
     path('employee_data/employee_registration/', views.faceRecogForm, name='registerEmployee'),
-    path('employee_data/registered_employees/', views.viewEmployees, name='viewEmployees'),
     path('employee_data/update_employees/', views.editUser, name='updateEmployees'),
     path('employee_data/add_face/', views.uploadImages, name='uploadImages'),
+    path('employee_data/remove_employee/', views.removeEmployee, name='removeEmployee'),
+    path('employee_data/view_removed_employee/', views.viewRemovedEmployees, name='removedEmployees'),
 
     path('attendance_log/', views.attendanceLog, name='attendanceLog'),
     path('users/', views.viewUsers, name='users'),

@@ -41,7 +41,7 @@ class FaceRegistrationForm(forms.Form):
                                    'placeholder': 'Email address'}))
 
 class UpdateFaceRegistrationForm(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, widget=forms.TextInput({
                                    'class': 'form-control',
@@ -60,7 +60,7 @@ class UpdateFaceRegistrationForm(forms.Form):
                                    'placeholder': 'Email address'}))
 
 class RegisterFaceForm(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',
@@ -71,3 +71,22 @@ class RegisterFaceForm(forms.Form):
     middle_name = forms.CharField(label="Middlename", max_length=20, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',
                                    'placeholder': 'Middle Name',}))
+
+class RemoveEmployee(forms.Form):
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
+
+    first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'First Name'}))
+    last_name = forms.CharField(label="Lastname", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Last Name'}))
+    middle_name = forms.CharField(label="Middlename", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Middle Name',}))
+    contact_number = forms.CharField(label="Contact Number", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Contact Number'}))
+    email_address = forms.EmailField(label="Email", max_length=254, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Email address'}))

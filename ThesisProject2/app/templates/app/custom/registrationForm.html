@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form id="registration_form" action="" method="POST" onsubmit="this.reset(); return false;">
+<form id="registration_form" action="" method="POST" onsubmit="this.submit(); this.reset(); return false;">
     <div id="infoDiv">
         {% csrf_token %}
         {{ form.employee_id_num }}
@@ -11,61 +11,14 @@
         {{ form.last_name }}
         {{ form.contact_number }}
         {{ form.email_address }}
-        {{ form.faces }}
     </div>
-
-    <div id="faceContainer">
-
-    </div>
-
-
     <input id="regFormSubmitBtn" type="submit" value="Submit" onclick="regNewUser()">
 </form>
-
-<div id="camContainer">
-    <center>
-        <img id="camOutputImg" />
-        <input id="captureImg" type="button" value="Capture">
-    </center>
-</div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    var imageWORect;
-    var imageWRect;
-
-    var capturedImgArray = [];
-
-    function imgUpdater() {
-        // create an AJAX call
-        $.ajax({
-            data: $(this).serialize(), // get the form data
-            url: "{% url 'imgOutputWOrigFrame' %}",
-            // on success
-            success: function (response) {
-                imageWRect = "data:image/png;base64," + response.frameWRect;
-                imageWORect = "data:image/png;base64," + response.frameWORect;
-                document.getElementById("camOutputImg").src = imageWRect;
-            },
-            // on error
-            error: function (response) {
-                // alert the error if any error occured
-                console.log(response.responseJSON.errors)
-            }
-        });
-
-        return false;
-    };
-    function captureImg() {
-        const imgElem = document.createElement("img");
-        imgElem.src = imageWORect;
-        capturedImgArray.push(imageWORect);
-        imgElem.width = 125;
-        imgElem.height = 125;
-
-        document.getElementById("faceContainer").appendChild(imgElem);
-    };
+    /*
     function regNewUser() {
         $.ajax({
             url: "{% url 'registerEmployee' %}",
@@ -100,6 +53,7 @@
     setInterval(imgUpdater, interval)
     document.getElementById("captureImg").addEventListener('click', function () { captureImg() });
     document.getElementById("regFormSubmitBtn").addEventListener('click', function () { passImgArray() });
+    ^/
 </script>
 
 

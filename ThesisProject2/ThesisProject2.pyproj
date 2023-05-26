@@ -68,7 +68,7 @@
     <Content Include="app\templates\app\contact.html" />
     <Content Include="app\templates\app\custom\attendanceLog.html" />
     <Content Include="app\templates\app\custom\cameraOnly.html" />
-    <Content Include="app\templates\app\custom\employeeData.html" />
+    <Content Include="app\templates\app\custom\removedEmployees.html" />
     <Content Include="app\templates\app\custom\liveCamFeed.html" />
     <Content Include="app\templates\app\custom\messagebox.html">
       <SubType>Code</SubType>
@@ -76,6 +76,7 @@
     <Content Include="app\templates\app\custom\updateForm.html" />
     <Content Include="app\templates\app\custom\registrationForm.html" />
     <Content Include="app\templates\app\custom\startPage.html" />
+    <Content Include="app\templates\app\custom\removeEmployee.html" />
     <Content Include="app\templates\app\custom\uploadImages.html" />
     <Content Include="app\templates\app\custom\viewUsers.html" />
     <Content Include="app\templates\app\custom\viewEmployees.html">
