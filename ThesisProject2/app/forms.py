@@ -90,3 +90,21 @@ class RemoveEmployee(forms.Form):
     email_address = forms.EmailField(label="Email", max_length=254, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',
                                    'placeholder': 'Email address'}))
+class RestoreRemovedEmployee(forms.Form):
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=False).values_list("employee_id_num", flat=True), )
+
+    first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'First Name'}))
+    last_name = forms.CharField(label="Lastname", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Last Name'}))
+    middle_name = forms.CharField(label="Middlename", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Middle Name',}))
+    contact_number = forms.CharField(label="Contact Number", max_length=20, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Contact Number'}))
+    email_address = forms.EmailField(label="Email", max_length=254, disabled=True, widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Email address'}))

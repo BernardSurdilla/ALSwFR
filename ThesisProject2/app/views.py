@@ -15,7 +15,7 @@ from django.http import HttpRequest, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm, RemoveEmployee
+from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm, RemoveEmployee, RestoreRemovedEmployee
 from .models import Employee, FacesDB, AttendanceLog
 from app.facial_recognition import fr_view
 
@@ -203,6 +203,20 @@ def removeEmployee(request):
         return render(request,'app/custom/removeEmployee.html',{'form': form,})
 
     return render(request,'app/custom/removeEmployee.html',{'form': form,})
+def restoreRemovedEmployee(request):
+    form = RestoreRemovedEmployee()
+    if request.method == 'POST':
+        employee_id_number = request.POST.get('employee_id_num')
+        if Employee.objects.filter(employee_id_num=employee_id_number, active=False):
+            empInst = Employee.objects.filter(employee_id_num=employee_id_number, active=False)[0]
+            empInst.active = True
+            empInst.save()
+            messages.success(request, 'Employee successfully restored!')
+            return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+    else:
+        return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+
+    return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
 def startPage(request):
     fr_view.initializeCamera()
     ltAttEntTime = ""

@@ -36,6 +36,7 @@ urlpatterns = [
     path('employee_data/add_face/', views.uploadImages, name='uploadImages'),
     path('employee_data/remove_employee/', views.removeEmployee, name='removeEmployee'),
     path('employee_data/view_removed_employee/', views.viewRemovedEmployees, name='removedEmployees'),
+    path('employee_data/restore_removed_employee/', views.restoreRemovedEmployee, name='restoreRemovedEmployee'),
 
     path('attendance_log/', views.attendanceLog, name='attendanceLog'),
     path('users/', views.viewUsers, name='users'),

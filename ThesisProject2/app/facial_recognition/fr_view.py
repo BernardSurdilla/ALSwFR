@@ -99,25 +99,26 @@ class VideoCameraFaceRecog(object):
                 #Get attendance records for the current detected employee
                 empAttRecords = AttendanceLog.objects.filter(employee_id_num=employee)
 
-                #Checks if the detected employee has any records, if not, create a new record for them
-                if not empAttRecords:
-                    attendanceLog = AttendanceLog()
-                    attendanceLog.employee_id_num = employee
-                    attendanceLog.time_in = localtime()
-                    attendanceLog.save()
-                else:
-                    #Gets the latest record in the list of attendance records of the employee
-                    latestRecord = empAttRecords.order_by('-time_in')[0]
-                    #Checks if the current latest record does not have a time_out yet, and the time_in time interval has passed
-                    if latestRecord.time_out == None and latestRecord.time_in + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
-                        latestRecord.time_out = localtime()
-                        latestRecord.save()
-                    #Checks if the current latest record time_out time interval has passed, if it is, create a new record
-                    if latestRecord.time_out + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
+                if employee.active == True:
+                    #Checks if the detected employee has any records, if not, create a new record for them
+                    if not empAttRecords:
                         attendanceLog = AttendanceLog()
                         attendanceLog.employee_id_num = employee
                         attendanceLog.time_in = localtime()
                         attendanceLog.save()
+                    else:
+                        #Gets the latest record in the list of attendance records of the employee
+                        latestRecord = empAttRecords.order_by('-time_in')[0]
+                        #Checks if the current latest record does not have a time_out yet, and the time_in time interval has passed
+                        if latestRecord.time_out == None and latestRecord.time_in + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
+                            latestRecord.time_out = localtime()
+                            latestRecord.save()
+                        #Checks if the current latest record time_out time interval has passed, if it is, create a new record
+                        if latestRecord.time_out + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
+                            attendanceLog = AttendanceLog()
+                            attendanceLog.employee_id_num = employee
+                            attendanceLog.time_in = localtime()
+                            attendanceLog.save()
         except:
             True
         self.semThread.release()      
