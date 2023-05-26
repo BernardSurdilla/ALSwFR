@@ -22,6 +22,9 @@ class AppPerms(models.Model):
             ("edit_user_records", "Can change the registered users"),
             ("check_user_records", "Can check the registered users"),
 
+            ("edit_removed_user_records", "Can change the removed users"),
+            ("check_removed_user_records", "Can check the removed users"),
+
             ("edit_employee_data", "Can change the employee data"),
             ("check_employee_data", "Can check the employee data"),
 

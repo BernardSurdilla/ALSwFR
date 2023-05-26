@@ -25,6 +25,17 @@ urlpatterns = [
              }
          ),
          name='login'),
+    path('accounts/login/',
+         LoginView.as_view
+         (
+             template_name='app/login.html',
+             authentication_form=forms.BootstrapAuthenticationForm,
+             extra_context=
+             {
+                 'title': 'Log in',
+             }
+         ),
+         name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('admin/', admin.site.urls),
     path('feed/', views.liveCamFeed, name='liveCamFeed'),

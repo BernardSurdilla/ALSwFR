@@ -41,7 +41,7 @@ class FaceRegistrationForm(forms.Form):
                                    'placeholder': 'Email address'}))
 
 class UpdateFaceRegistrationForm(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", empty_label='Employee Number', queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, widget=forms.TextInput({
                                    'class': 'form-control',
@@ -60,7 +60,7 @@ class UpdateFaceRegistrationForm(forms.Form):
                                    'placeholder': 'Email address'}))
 
 class RegisterFaceForm(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", empty_label='Employee Number', queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',
@@ -73,7 +73,7 @@ class RegisterFaceForm(forms.Form):
                                    'placeholder': 'Middle Name',}))
 
 class RemoveEmployee(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", empty_label='Employee Number', queryset=Employee.objects.filter(active=True).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',
@@ -91,7 +91,7 @@ class RemoveEmployee(forms.Form):
                                    'class': 'form-control',
                                    'placeholder': 'Email address'}))
 class RestoreRemovedEmployee(forms.Form):
-    employee_id_num = forms.ModelChoiceField(label="Employee Number", queryset=Employee.objects.filter(active=False).values_list("employee_id_num", flat=True), )
+    employee_id_num = forms.ModelChoiceField(label="Employee Number", empty_label='Employee Number', queryset=Employee.objects.filter(active=False).values_list("employee_id_num", flat=True), )
 
     first_name = forms.CharField(label="Firstname", max_length=20, disabled=True, widget=forms.TextInput({
                                    'class': 'form-control',

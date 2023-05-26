@@ -27,10 +27,8 @@
                     {% if request.user.is_anonymous == False %}
 
                     {% if perms.app.check_camera %}
-                    <li><a href="{% url 'liveCamFeed' %}">Live Camera Feed</a></li>
-                    {% endif %}
-
                     <li><a href="{% url 'employeeFeedView' %}">Camera</a></li>
+                    {% endif %}
 
                     {% if perms.app.check_attendance_records %}
                     <li><a href="{% url 'attendanceLog' %}">Attendance Log</a></li>

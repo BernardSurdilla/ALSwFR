@@ -14,6 +14,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import FaceRegistrationForm, UpdateFaceRegistrationForm, RegisterFaceForm, RemoveEmployee, RestoreRemovedEmployee
 from .models import Employee, FacesDB, AttendanceLog
@@ -43,6 +44,8 @@ def about(request):
             'message':'A.L.S.W.F.R',
         }
     )
+
+@login_required
 def liveCamFeed(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -54,6 +57,8 @@ def liveCamFeed(request):
     )
 
 #Requests for returning data from database with html page
+@login_required
+@permission_required("app.check_user_records")
 def viewUsers(request):
     query_results = User.objects.all()
     return render(
@@ -64,6 +69,8 @@ def viewUsers(request):
             'table_data': query_results,
         }
     )
+@login_required
+@permission_required("app.check_employee_data")
 def viewEmployees(request):
     query_results = Employee.objects.filter(active = True)
     return render(
@@ -74,6 +81,8 @@ def viewEmployees(request):
             'table_data': query_results,
         }
     )
+@login_required
+@permission_required("app.check_removed_user_records")
 def viewRemovedEmployees(request):
     query_results = Employee.objects.filter(active = False)
     return render(
@@ -84,6 +93,8 @@ def viewRemovedEmployees(request):
             'table_data': query_results,
         }
     )
+@login_required
+@permission_required("app.check_attendance_records")
 def attendanceLog(request):
     query_results = AttendanceLog.objects.all()
     assert isinstance(request, HttpRequest)
@@ -97,6 +108,8 @@ def attendanceLog(request):
     )
 
 #Requests for returning data from database with html page, and editing data
+@login_required
+@permission_required("app.edit_employee_data")
 def editUser(request):
     if request.method == 'POST':
         form = UpdateFaceRegistrationForm()
@@ -118,6 +131,8 @@ def editUser(request):
         form = UpdateFaceRegistrationForm()
 
     return render(request, 'app/custom/updateForm.html', {'form': form})
+@login_required
+@permission_required("app.edit_employee_data")
 def faceRecogForm(request):
     #The view for user registration
     if request.method == 'POST':
@@ -137,6 +152,8 @@ def faceRecogForm(request):
         form = FaceRegistrationForm()
 
     return render(request, 'app/custom/registrationForm.html', {'form': form})
+@login_required
+@permission_required("app.edit_employee_data")
 def insertImgArr(request):
     if request.method == 'POST':
         emp_id = 0
@@ -180,6 +197,8 @@ def insertImgArr(request):
         else:
             messages.error(request, 'Invalid data input! Try again.')
     pass
+@login_required
+@permission_required("app.edit_employee_data")
 def uploadImages(request):
     form = RegisterFaceForm()
     return render(
@@ -189,6 +208,9 @@ def uploadImages(request):
             'form': form,
         }
     )
+
+@login_required
+@permission_required("app.edit_employee_data")
 def removeEmployee(request):
     form = RemoveEmployee()
     if request.method == 'POST':
@@ -203,6 +225,8 @@ def removeEmployee(request):
         return render(request,'app/custom/removeEmployee.html',{'form': form,})
 
     return render(request,'app/custom/removeEmployee.html',{'form': form,})
+@login_required
+@permission_required("app.edit_removed_user_records")
 def restoreRemovedEmployee(request):
     form = RestoreRemovedEmployee()
     if request.method == 'POST':
@@ -217,6 +241,7 @@ def restoreRemovedEmployee(request):
         return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
 
     return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+
 def startPage(request):
     fr_view.initializeCamera()
     ltAttEntTime = ""
@@ -250,6 +275,7 @@ def startPage(request):
     )
 
 #Json Requests
+@login_required
 def getEmployeeDataUsingEmpNum(request):
     if request.method == 'GET':
         employeeIdNum = request.GET.get('employee_number')
