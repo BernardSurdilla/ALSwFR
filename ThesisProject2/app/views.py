@@ -6,6 +6,7 @@ import base64
 import os
 import string
 import random
+import json
 from time import sleep
 from types import NoneType
 
@@ -154,7 +155,9 @@ def faceRecogForm(request):
     return render(request, 'app/custom/registrationForm.html', {'form': form})
 @login_required
 @permission_required("app.edit_employee_data")
-def insertImgArr(request):
+def uploadImages(request):
+    form = RegisterFaceForm()
+
     if request.method == 'POST':
         emp_id = 0
         #Check if employeeId is valid
@@ -193,21 +196,12 @@ def insertImgArr(request):
                 facedb.employee_id_num = curEmployee
                 facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
                 facedb.save()
-                messages.success(request, 'Employee successfully registered!')
+                messages.success(request, 'Employee face successfully uploaded!')
+                return render(request, 'app/custom/uploadImages.html', {'form': form,})
         else:
             messages.error(request, 'Invalid data input! Try again.')
-    pass
-@login_required
-@permission_required("app.edit_employee_data")
-def uploadImages(request):
-    form = RegisterFaceForm()
-    return render(
-        request, 
-        'app/custom/uploadImages.html', 
-        {
-            'form': form,
-        }
-    )
+            return render(request, 'app/custom/uploadImages.html', {'form': form,})
+    return render(request, 'app/custom/uploadImages.html', {'form': form,})
 
 @login_required
 @permission_required("app.edit_employee_data")
@@ -243,6 +237,7 @@ def restoreRemovedEmployee(request):
     return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
 
 def startPage(request):
+    
     fr_view.initializeCamera()
     ltAttEntTime = ""
     ltAttEntName = ""

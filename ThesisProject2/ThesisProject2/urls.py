@@ -60,9 +60,6 @@ urlpatterns = [
     path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
     path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
 
-    #For uploading images
-    path('upImg', views.insertImgArr, name='insertImgArr')
-
 
 ]
 

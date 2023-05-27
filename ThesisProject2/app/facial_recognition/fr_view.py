@@ -1,3 +1,6 @@
+from asyncio.windows_events import NULL
+from itertools import count
+from turtle import back
 from django.shortcuts import render
 from django.views.decorators import gzip
 
@@ -12,6 +15,9 @@ import cv2
 import threading
 import os
 import base64
+import numpy
+import json
+from PIL import Image
 
 
 """
@@ -23,14 +29,21 @@ import base64
 class VideoCameraFaceRecog(object):
     updateCamFrameThread = None
     def __init__(self):
+        self._running = True
         self.video = cv2.VideoCapture(0)
         (self.grabbed, self.frame) = self.video.read()
-        threading.Thread(target=self.update, args=()).start()
+        self.detectedEmployees = {}
+        self.start()
     def __del__(self):
         self.video.release()
     def update(self):
-        while True:
+        while self._running == True:
             (self.grabbed, self.frame) = self.video.read()
+    def stop(self):
+        self._running = False
+    def start(self):
+        self._running = True
+        threading.Thread(target=self.update, args=()).start()
     def get_frame(self):
         image = self.frame
         _, self.pngImg = cv2.imencode('.png', image)
@@ -74,24 +87,25 @@ class VideoCameraFaceRecog(object):
             return extractedFaces
         except:
             return []
-
     #Thread for background faceRecognition
     semThread = threading.Lock()
     loggingIntervalMinutes = 1
-
     #Function to find faces in the frame, and log them to the attendance records, works if the user only has a single camera
     def findFace(self):
         if self.semThread.locked == True:
             pass
         self.semThread.acquire()
         faceArray = self.getFaces()
-        #Finds the faces in the faceArray on the db, resource intensive process, must run on separate thread
+        #Note all detected employees
+        foundEmployees = {}
         try:
+            counter = 0
             for i in faceArray:
+                
                 #Finds face in db
                 results = DeepFace.find(i, db_path = os.path.join(settings.MEDIA_ROOT, 'faces'), enforce_detection = True, silent = True)
                 #Get the best result, get the filepath to the image, then trims down the path, and saves only the fileName
-                bestResult = results[0]['identity'][0].partition('\media\\')[2]
+                bestResult = results[0].sort_values(by='VGG-Face_cosine', ascending=False)['identity'][0].partition('\media\\')[2]
                 #Get current time to be inserted to database
                 currentTime = localtime()
                 #Get employee that is tied into the file
@@ -106,6 +120,21 @@ class VideoCameraFaceRecog(object):
                         attendanceLog.employee_id_num = employee
                         attendanceLog.time_in = localtime()
                         attendanceLog.save()
+                        try:
+                            #Get image path from results, open said image, convert it as a numpy array,
+                            #and encode the numpy array to an bytearray using cv2
+                            #Really retarded solution, but it works
+                            imagePath = results[0].sort_values(by='VGG-Face_cosine', ascending=False)['identity'][0]
+                            encodedImage = cv2.imencode('.png', numpy.asarray(Image.open(imagePath)))[1]
+                        
+                            foundEmployees[counter] = {
+                                                      0:employee.employee_id_num, 
+                                                      1:employee.first_name, 
+                                                      2:employee.last_name,
+                                                      3:base64.b64encode(encodedImage).decode('utf-8')
+                                }
+                        except:
+                            1+1
                     else:
                         #Gets the latest record in the list of attendance records of the employee
                         latestRecord = empAttRecords.order_by('-time_in')[0]
@@ -113,15 +142,47 @@ class VideoCameraFaceRecog(object):
                         if latestRecord.time_out == None and latestRecord.time_in + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
                             latestRecord.time_out = localtime()
                             latestRecord.save()
+                            try:
+                                #Get image path from results, open said image, convert it as a numpy array,
+                                #and encode the numpy array to an bytearray using cv2
+                                #Really retarded solution, but it works
+                                imagePath = results[0].sort_values(by='VGG-Face_cosine', ascending=False)['identity'][0]
+                                encodedImage = cv2.imencode('.png', numpy.asarray(Image.open(imagePath)))[1]
+                        
+                                foundEmployees[counter] = {
+                                                          0:employee.employee_id_num, 
+                                                          1:employee.first_name, 
+                                                          2:employee.last_name,
+                                                          3:base64.b64encode(encodedImage).decode('utf-8')
+                                    }
+                            except:
+                                1+1
                         #Checks if the current latest record time_out time interval has passed, if it is, create a new record
                         if latestRecord.time_out + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
                             attendanceLog = AttendanceLog()
                             attendanceLog.employee_id_num = employee
                             attendanceLog.time_in = localtime()
                             attendanceLog.save()
+                            try:
+                                #Get image path from results, open said image, convert it as a numpy array,
+                                #and encode the numpy array to an bytearray using cv2
+                                #Really retarded solution, but it works
+                                imagePath = results[0].sort_values(by='VGG-Face_cosine', ascending=False)['identity'][0]
+                                encodedImage = cv2.imencode('.png', numpy.asarray(Image.open(imagePath)))[1]
+                        
+                                foundEmployees[counter] = {
+                                                          0:employee.employee_id_num, 
+                                                          1:employee.first_name, 
+                                                          2:employee.last_name,
+                                                          3:base64.b64encode(encodedImage).decode('utf-8')
+                                    }
+                            except:
+                                1+1
+                    counter += 1
+            self.detectedEmployees = foundEmployees
         except:
-            True
-        self.semThread.release()      
+            False
+        self.semThread.release()   
 cam = 0
 def initializeCamera():
     global cam
@@ -130,23 +191,26 @@ def initializeCamera():
             cam = VideoCameraFaceRecog()
         except:
             pass
-"""
-def startCamera():
-    camVarType = type(cam)
-    #Checks if the camera is started, if it is, starts updating the camera
-    if camVarType == VideoCameraFaceRecog:
-        cam.startCamera()
-    else:
-        pass
-"""
 #@gzip.gzip_page
 def face_recog(request):
     return render(request, 'app/custom/cameraOnly.html')
+
+backupData = {}
 def jsonVidImgResp(request):
+    global backupData
     frame = cam.get_frame_with_rect()
     cam.findFace()
 
-    response = {'frame' :base64.b64encode(frame).decode('utf-8')}
+    pass2dArr = cam.detectedEmployees
+    if backupData == pass2dArr:
+        pass2dArr = {}
+    else:
+       backupData = pass2dArr
+
+    response = {
+        'frame': base64.b64encode(frame).decode('utf-8'),
+        'detected_employees': pass2dArr,
+        }
     return JsonResponse(response)
 def jsonVidImgRespWOrigImg(request):
     frameWRect = cam.get_frame_with_rect()

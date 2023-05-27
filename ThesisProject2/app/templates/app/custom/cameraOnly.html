@@ -9,9 +9,10 @@
     <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
 <body>
-    <center>
-        <img id="camOutputImg" class="camOutputImg" />
-    </center>
+    <img id="camOutputImg" class="camOutputImg" />
+    <div id="outputPanel">
+
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -23,6 +24,30 @@
                 // on success
                 success: function (response) {
                     document.getElementById("camOutputImg").src = "data:image/png;base64," + response.frame;
+                    if (response.detected_employees != undefined) {
+                        var containerTextElem = 'p'
+
+                        for (i = 0; i <= Object.keys(response.detected_employees).length; i++) {
+                            var container = document.createElement('div')
+
+                            var employeeImage = document.createElement('img')
+                            employeeImage.src = "data:image/png;base64," + response.detected_employees[i][3]
+
+                            var empNum = document.createElement(containerTextElem)
+                            empNum.innerHTML = response.detected_employees[i][0]
+
+                            var empName = document.createElement(containerTextElem)
+                            empName.innerHTML = response.detected_employees[i][1] + ' ' + response.detected_employees[i][2]
+
+                            container.appendChild(employeeImage)
+                            container.appendChild(empNum)
+                            container.appendChild(empName)
+
+                            document.getElementById('outputPanel').appendChild(container)
+                        }
+
+                    }
+                    
                 },
                 // on error
                 error: function (response) {
@@ -33,7 +58,7 @@
 
             return false;
         };
-        var interval = 200
+        var interval = 500
         setInterval(imgUpdater, interval)
 
     </script>

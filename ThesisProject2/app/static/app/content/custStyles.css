@@ -52,9 +52,23 @@ body {
 #faceContainer img{
     width: var(--imgWidth);
     height: var(--imgHeight);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 .camOutputImg {
-    width: 100%;
-    height: 100%;
-    float:left;
+    width: 60%;
+    height: 60%;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    float: left;
+}
+#outputPanel{
+    float:right;
+}
+#outputPanel img {
+    width: 20%;
+    height: 20%;
+}
+#outputPanel p {
+    font-size:13px;
 }
