@@ -22,20 +22,22 @@
     </tr>
     {% endfor %}
 </table>
-{% if perms.app.edit_employee_data %}
-<h4><a href="{% url 'registerEmployee' %}">Register Employee</a></h4>
-<h4><a href="{% url 'updateEmployees' %}">Update Employee Data </a></h4>
-<h4><a href="{% url 'uploadImages' %}">Register Employee Face</a></h4>
-<br />
-<h4><a href="{% url 'removeEmployee' %}">Remove Employee</a></h4>
-{% endif %}
+<div id="employeeOperationLinksContainer">
+    {% if perms.app.edit_employee_data %}
+    <h4><a href="{% url 'registerEmployee' %}">Register Employee</a></h4>
+    <h4><a href="{% url 'updateEmployees' %}">Update Employee Data </a></h4>
+    <h4><a href="{% url 'uploadImages' %}">Register Employee Face</a></h4>
+    <br />
+    <h4><a href="{% url 'removeEmployee' %}">Remove Employee</a></h4>
+    {% endif %}
 
-{% if perms.app.check_removed_user_records %}
-<h4><a href="{% url 'removedEmployees' %}">View Removed Employees</a></h4>
-{% endif %}
+    {% if perms.app.check_removed_user_records %}
+    <h4><a href="{% url 'removedEmployees' %}">View Removed Employees</a></h4>
+    {% endif %}
 
-{% if perms.app.edit_removed_user_records %}
-<h4><a href="{% url 'restoreRemovedEmployee' %}">Restore Removed Employee</a></h4>
-{% endif %}
+    {% if perms.app.edit_removed_user_records %}
+    <h4><a href="{% url 'restoreRemovedEmployee' %}">Restore Removed Employee</a></h4>
+    {% endif %}
+</div>
 
 {% endblock %}

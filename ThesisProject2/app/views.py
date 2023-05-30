@@ -125,13 +125,13 @@ def editUser(request):
             
             employee.save()
             messages.success(request, 'Employee successfully registered!')
-            return render(request, 'app/custom/updateForm.html', {'form': form})
+            return render(request, 'app/custom/updateForm.html', {'title': 'Edit Employee Data', 'form': form})
         else:
             messages.error(request, 'Invalid data input! Try again.')
     else:
         form = UpdateFaceRegistrationForm()
 
-    return render(request, 'app/custom/updateForm.html', {'form': form})
+    return render(request, 'app/custom/updateForm.html', {'title': 'Edit Employee Data', 'form': form})
 @login_required
 @permission_required("app.edit_employee_data")
 def faceRecogForm(request):
@@ -148,11 +148,11 @@ def faceRecogForm(request):
         employee.save()
 
         messages.success(request, 'Employee successfully registered!')
-        return render(request, 'app/custom/registrationForm.html', {'form': form})
+        return render(request, 'app/custom/registrationForm.html', {'title': 'Register Employee', 'form': form})
     else:
         form = FaceRegistrationForm()
 
-    return render(request, 'app/custom/registrationForm.html', {'form': form})
+    return render(request, 'app/custom/registrationForm.html', {'title': 'Register Employee', 'form': form})
 @login_required
 @permission_required("app.edit_employee_data")
 def uploadImages(request):
@@ -197,11 +197,11 @@ def uploadImages(request):
                 facedb.image.save(str(res) + '.png', open(tempImgFilePath, 'rb'))
                 facedb.save()
                 messages.success(request, 'Employee face successfully uploaded!')
-                return render(request, 'app/custom/uploadImages.html', {'form': form,})
+                return render(request, 'app/custom/uploadImages.html', {'title': 'Register Employee Face', 'form': form,})
         else:
             messages.error(request, 'Invalid data input! Try again.')
-            return render(request, 'app/custom/uploadImages.html', {'form': form,})
-    return render(request, 'app/custom/uploadImages.html', {'form': form,})
+            return render(request, 'app/custom/uploadImages.html', {'title': 'Register Employee Face', 'form': form,})
+    return render(request, 'app/custom/uploadImages.html', {'title': 'Register Employee Face', 'form': form,})
 
 @login_required
 @permission_required("app.edit_employee_data")
@@ -214,11 +214,11 @@ def removeEmployee(request):
             empInst.active = False
             empInst.save()
             messages.success(request, 'Employee successfully removed!')
-            return render(request,'app/custom/removeEmployee.html',{'form': form,})
+            return render(request,'app/custom/removeEmployee.html',{'title': 'Remove Employee', 'form': form,})
     else:
-        return render(request,'app/custom/removeEmployee.html',{'form': form,})
+        return render(request,'app/custom/removeEmployee.html',{'title': 'Remove Employee', 'form': form,})
 
-    return render(request,'app/custom/removeEmployee.html',{'form': form,})
+    return render(request,'app/custom/removeEmployee.html',{'title': 'Remove Employee', 'form': form,})
 @login_required
 @permission_required("app.edit_removed_user_records")
 def restoreRemovedEmployee(request):
@@ -230,11 +230,11 @@ def restoreRemovedEmployee(request):
             empInst.active = True
             empInst.save()
             messages.success(request, 'Employee successfully restored!')
-            return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+            return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Removed Employees', 'form': form,})
     else:
-        return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+        return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Removed Employees', 'form': form,})
 
-    return render(request,'app/custom/restoreRemovedEmployee.html',{'form': form,})
+    return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Removed Employees', 'form': form,})
 
 def startPage(request):
     

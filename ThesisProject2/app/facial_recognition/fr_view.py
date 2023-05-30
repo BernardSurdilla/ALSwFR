@@ -193,7 +193,7 @@ def initializeCamera():
             pass
 #@gzip.gzip_page
 def face_recog(request):
-    return render(request, 'app/custom/cameraOnly.html')
+    return render(request, 'app/custom/cameraOnly.html', {'title': 'Camera'})
 
 backupData = {}
 def jsonVidImgResp(request):

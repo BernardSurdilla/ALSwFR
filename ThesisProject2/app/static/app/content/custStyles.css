@@ -64,6 +64,7 @@ body {
 }
 #outputPanel{
     float:right;
+
 }
 #outputPanel img {
     width: 20%;
@@ -71,4 +72,18 @@ body {
 }
 #outputPanel p {
     font-size:13px;
+}
+div#employeeOperationLinksContainer h4 {
+    border: cornflowerblue 5px outset;
+    margin: 0px;
+}
+div#employeeOperationLinksContainer {
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: stretch;
+    margin: 7px;
+    border: #d5db00 5px inset;
 }

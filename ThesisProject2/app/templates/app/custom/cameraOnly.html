@@ -1,15 +1,61 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>{{ title }} - Attendance Logging System</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'app/content/custStyles.css' %}" />
-    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
+
+    <style>
+        body {
+            background-color: midnightblue;
+        }
+        .camOutputImg {
+            width: 50%;
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            float: left;
+            border: black 10px solid;
+        }
+        #outputPanel div {
+            float: right;
+            padding: 10px;
+            border: #20208f 10px inset;
+            width: 60%;
+            text-align: center;
+            background-color: cornflowerblue;
+            display: inline-flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+        #outputPanel {
+            float: right;
+            width: 45%;
+            display: inline-flex;
+            flex-direction: column;
+            align-content: space-around;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+		#outputPanel img {
+			width: 20%;
+			height: 20%;
+		}
+		#outputPanel p {
+			font-size:13px;
+		}
+	</style>
+
 </head>
 <body>
-    <img id="camOutputImg" class="camOutputImg" />
+    <center>
+        <img id="camOutputImg" class="camOutputImg" />
+    </center>
+    
     <div id="outputPanel">
 
     </div>
@@ -29,6 +75,7 @@
 
                         for (i = 0; i <= Object.keys(response.detected_employees).length; i++) {
                             var container = document.createElement('div')
+                            container.display = "inherit"
 
                             var employeeImage = document.createElement('img')
                             employeeImage.src = "data:image/png;base64," + response.detected_employees[i][3]
