@@ -29,6 +29,8 @@
     <h4><a href="{% url 'uploadImages' %}">Register Employee Face</a></h4>
     <br />
     <h4><a href="{% url 'removeEmployee' %}">Remove Employee</a></h4>
+    <h4><a href="{% url 'removeFace' %}">Remove Employee Face</a></h4>
+    <br />
     {% endif %}
 
     {% if perms.app.check_removed_user_records %}
@@ -37,6 +39,7 @@
 
     {% if perms.app.edit_removed_user_records %}
     <h4><a href="{% url 'restoreRemovedEmployee' %}">Restore Removed Employee</a></h4>
+    <h4><a href="{% url 'recoverRemovedFace' %}">Recover Removed Employee Face</a></h4>
     {% endif %}
 </div>
 

@@ -45,6 +45,10 @@ urlpatterns = [
     path('employee_data/employee_registration/', views.faceRecogForm, name='registerEmployee'),
     path('employee_data/update_employees/', views.editUser, name='updateEmployees'),
     path('employee_data/add_face/', views.uploadImages, name='uploadImages'),
+
+    path('employee_data/remove_face/', views.removeFace, name='removeFace'),
+    path('employee_data/recover_remove_face/', views.recoverRemovedFace, name='recoverRemovedFace'),
+
     path('employee_data/remove_employee/', views.removeEmployee, name='removeEmployee'),
     path('employee_data/view_removed_employee/', views.viewRemovedEmployees, name='removedEmployees'),
     path('employee_data/restore_removed_employee/', views.restoreRemovedEmployee, name='restoreRemovedEmployee'),
@@ -59,6 +63,8 @@ urlpatterns = [
     path('camFrame/', fr_view.jsonVidImgResp, name='imgOutput'),
     path('camFrameOF/', fr_view.jsonVidImgRespWOrigImg, name='imgOutputWOrigFrame'),
     path('getDT/', views.getEmployeeDataUsingEmpNum, name='getEmpData'),
+    path('getDF/', views.getImages, name='getEmpFaces'),
+    path('getDFR/', views.getRemovedImages, name='getRemEmpFace'),
 
 
 ]

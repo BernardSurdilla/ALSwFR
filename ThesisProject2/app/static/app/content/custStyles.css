@@ -45,15 +45,37 @@ body {
     float:left;
 }
 #faceContainer {
-    float:right;
-    width:49%;
-    display:block;
+    float: right;
+    width: 49%;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    float: right;
+    align-content: flex-end;
 }
-#faceContainer img{
-    width: var(--imgWidth);
-    height: var(--imgHeight);
+#faceContainer img {
+    width: 50%;
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
+    display: block;
+}
+div#faceContainer div {
+    border-color: #2c2ce7;
+    border-style: outset;
+    border-width: 8px;
+}
+div#camContainer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    /* float: left; */
+    flex-direction: column;
+    width: 40%;
+    margin: 10px;
 }
 .camOutputImg {
     width: 60%;

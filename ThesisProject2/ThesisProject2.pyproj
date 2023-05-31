@@ -73,7 +73,9 @@
     <Content Include="app\templates\app\custom\messagebox.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="app\templates\app\custom\restoreRemovedImage.html" />
     <Content Include="app\templates\app\custom\restoreRemovedEmployee.html" />
+    <Content Include="app\templates\app\custom\removeImage.html" />
     <Content Include="app\templates\app\custom\updateForm.html" />
     <Content Include="app\templates\app\custom\registrationForm.html" />
     <Content Include="app\templates\app\custom\startPage.html" />

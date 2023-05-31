@@ -86,9 +86,13 @@
                             var empName = document.createElement(containerTextElem)
                             empName.innerHTML = response.detected_employees[i][1] + ' ' + response.detected_employees[i][2]
 
+                            var time = document.createElement(containerTextElem)
+                            time.innerHTML = response.detected_employees[i][4]
+
                             container.appendChild(employeeImage)
                             container.appendChild(empNum)
                             container.appendChild(empName)
+                            container.appendChild(time)
 
                             document.getElementById('outputPanel').appendChild(container)
                         }

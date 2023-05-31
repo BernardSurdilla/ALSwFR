@@ -109,7 +109,13 @@ class VideoCameraFaceRecog(object):
                 #Get current time to be inserted to database
                 currentTime = localtime()
                 #Get employee that is tied into the file
-                employee = FacesDB.objects.filter(image=bestResult)[0].employee_id_num
+                employeeFace = FacesDB.objects.filter(image=bestResult, active=True)
+                if not employeeFace:
+                    continue
+                employee = employeeFace[0].employee_id_num
+                if employee.active == False:
+                    continue
+
                 #Get attendance records for the current detected employee
                 empAttRecords = AttendanceLog.objects.filter(employee_id_num=employee)
 
@@ -118,7 +124,7 @@ class VideoCameraFaceRecog(object):
                     if not empAttRecords:
                         attendanceLog = AttendanceLog()
                         attendanceLog.employee_id_num = employee
-                        attendanceLog.time_in = localtime()
+                        attendanceLog.time_in = currentTime
                         attendanceLog.save()
                         try:
                             #Get image path from results, open said image, convert it as a numpy array,
@@ -131,7 +137,8 @@ class VideoCameraFaceRecog(object):
                                                       0:employee.employee_id_num, 
                                                       1:employee.first_name, 
                                                       2:employee.last_name,
-                                                      3:base64.b64encode(encodedImage).decode('utf-8')
+                                                      3:base64.b64encode(encodedImage).decode('utf-8'),
+                                                      4:currentTime.now().time(),
                                 }
                         except:
                             1+1
@@ -140,7 +147,7 @@ class VideoCameraFaceRecog(object):
                         latestRecord = empAttRecords.order_by('-time_in')[0]
                         #Checks if the current latest record does not have a time_out yet, and the time_in time interval has passed
                         if latestRecord.time_out == None and latestRecord.time_in + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
-                            latestRecord.time_out = localtime()
+                            latestRecord.time_out = currentTime
                             latestRecord.save()
                             try:
                                 #Get image path from results, open said image, convert it as a numpy array,
@@ -153,7 +160,8 @@ class VideoCameraFaceRecog(object):
                                                           0:employee.employee_id_num, 
                                                           1:employee.first_name, 
                                                           2:employee.last_name,
-                                                          3:base64.b64encode(encodedImage).decode('utf-8')
+                                                          3:base64.b64encode(encodedImage).decode('utf-8'),
+                                                          4:currentTime.now().time(),
                                     }
                             except:
                                 1+1
@@ -161,7 +169,7 @@ class VideoCameraFaceRecog(object):
                         if latestRecord.time_out + timedelta(minutes=self.loggingIntervalMinutes) <= localtime():
                             attendanceLog = AttendanceLog()
                             attendanceLog.employee_id_num = employee
-                            attendanceLog.time_in = localtime()
+                            attendanceLog.time_in = currentTime
                             attendanceLog.save()
                             try:
                                 #Get image path from results, open said image, convert it as a numpy array,
@@ -174,7 +182,8 @@ class VideoCameraFaceRecog(object):
                                                           0:employee.employee_id_num, 
                                                           1:employee.first_name, 
                                                           2:employee.last_name,
-                                                          3:base64.b64encode(encodedImage).decode('utf-8')
+                                                          3:base64.b64encode(encodedImage).decode('utf-8'),
+                                                          4:currentTime.now().time(),
                                     }
                             except:
                                 1+1

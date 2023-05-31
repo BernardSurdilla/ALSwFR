@@ -7,6 +7,9 @@ import os
 import string
 import random
 import json
+from PIL import Image
+import cv2
+import numpy
 from time import sleep
 from types import NoneType
 
@@ -220,6 +223,30 @@ def removeEmployee(request):
 
     return render(request,'app/custom/removeEmployee.html',{'title': 'Remove Employee', 'form': form,})
 @login_required
+@permission_required("app.edit_employee_data")
+def removeFace(request):
+    form = RemoveEmployee()
+    if request.method == 'POST':
+        employee_id_number = request.POST.get('employee_id_num')
+        faceIdList = request.POST.getlist('employee_face_id[]')
+
+        if Employee.objects.filter(employee_id_num=employee_id_number, active=True):
+            empInst = Employee.objects.filter(employee_id_num=employee_id_number, active=True)[0]
+            
+            for imageId in faceIdList:
+                empFace = FacesDB.objects.filter(employee_id_num = empInst, id=imageId)[0]
+
+                empFace.active = False
+                empFace.save()
+
+            messages.success(request, 'Employee face successfully removed!')
+            return render(request,'app/custom/removeImage.html',{'title': 'Remove Employee Face', 'form': form,})
+    else:
+        return render(request,'app/custom/removeImage.html',{'title': 'Remove Employee Face', 'form': form,})
+
+    return render(request,'app/custom/removeImage.html',{'title': 'Remove Employee Face', 'form': form,})
+
+@login_required
 @permission_required("app.edit_removed_user_records")
 def restoreRemovedEmployee(request):
     form = RestoreRemovedEmployee()
@@ -235,6 +262,27 @@ def restoreRemovedEmployee(request):
         return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Removed Employees', 'form': form,})
 
     return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Removed Employees', 'form': form,})
+@login_required
+@permission_required("app.edit_removed_user_records")
+def recoverRemovedFace(request):
+    form = RemoveEmployee()
+    if request.method == 'POST':
+        employee_id_number = request.POST.get('employee_id_num')
+        faceIdList = request.POST.getlist('employee_face_id[]')
+
+        if Employee.objects.filter(employee_id_num=employee_id_number, active=True):
+            empInst = Employee.objects.filter(employee_id_num=employee_id_number, active=True)[0]
+            
+            for imageId in faceIdList:
+                empFace = FacesDB.objects.filter(employee_id_num = empInst, id=imageId)[0]
+
+                empFace.active = True
+                empFace.save()
+
+            messages.success(request, 'Employee face successfully recovered!')
+            return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Recover Remove Employee Face', 'form': form,})
+    return render(request,'app/custom/restoreRemovedEmployee.html',{'title': 'Recover Removed Employee Face', 'form': form,})
+
 
 def startPage(request):
     
@@ -297,3 +345,45 @@ def getEmployeeDataUsingEmpNum(request):
                     'email': placeholder,
                     }
                 return JsonResponse(response)
+def getImages(request):
+    if request.method == 'GET':
+        employeeIdNum = request.GET.get('employee_number')
+        results = {}
+
+        if type(employeeIdNum) != NoneType:
+            try:
+                employeeInstance = Employee.objects.filter(employee_id_num=int(employeeIdNum))[0]
+                employeeFaces = FacesDB.objects.filter(employee_id_num = employeeInstance, active=True)
+                counter = 0
+
+                for face in employeeFaces:
+                    results[counter] = {
+                        'id':face.id,
+                        'filepath':base64.b64encode(cv2.imencode('.png', numpy.asarray(Image.open(str(face.image.file))))[1]).decode('utf-8'),
+                        }
+                    counter += 1
+            except:
+                return JsonResponse(results)
+            
+        return JsonResponse(results)
+def getRemovedImages(request):
+    if request.method == 'GET':
+        employeeIdNum = request.GET.get('employee_number')
+        results = {}
+
+        if type(employeeIdNum) != NoneType:
+            try:
+                employeeInstance = Employee.objects.filter(employee_id_num=int(employeeIdNum))[0]
+                employeeFaces = FacesDB.objects.filter(employee_id_num = employeeInstance, active=False)
+                counter = 0
+
+                for face in employeeFaces:
+                    results[counter] = {
+                        'id':face.id,
+                        'filepath':base64.b64encode(cv2.imencode('.png', numpy.asarray(Image.open(str(face.image.file))))[1]).decode('utf-8'),
+                        }
+                    counter += 1
+            except:
+                return JsonResponse(results)
+            
+        return JsonResponse(results)
