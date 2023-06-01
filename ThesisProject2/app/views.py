@@ -3,6 +3,7 @@ Definition of views.
 """
 
 import base64
+from math import perm
 import os
 import string
 import random
@@ -65,6 +66,7 @@ def liveCamFeed(request):
 @permission_required("app.check_user_records")
 def viewUsers(request):
     query_results = User.objects.all()
+
     return render(
         request, 
         'app/custom/viewUsers.html', 

@@ -44,8 +44,11 @@
 
                     {% endif %}
 
+                    {% if request.user.is_anonymous == True %}
                     <li><a href="{% url 'about' %}">About</a></li>
+                    {% endif %}
                     <li><a href="{% url 'contact' %}">Contact</a></li>
+
                 </ul>
                 {% include 'app/loginpartial.html' %}
             </div>
